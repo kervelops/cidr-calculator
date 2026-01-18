@@ -1,0 +1,387 @@
+
+                        <!DOCTYPE html>
+                        <html lang="en">
+                        <head>
+                            <meta charset="UTF-8">
+                            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+							<style>
+								body {
+									background-color: white; /* Ensure the iframe has a white background */
+								}
+
+								
+							</style>
+                        </head>
+                        <body>
+                            <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CIDR Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 30px;
+            max-width: 600px;
+            width: 100%;
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 600;
+        }
+        
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .results {
+            margin-top: 30px;
+            display: none;
+        }
+        
+        .results.show {
+            display: block;
+        }
+        
+        .result-section {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 15px;
+        }
+        
+        .result-section h2 {
+            color: #667eea;
+            font-size: 18px;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 8px;
+        }
+        
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .result-item:last-child {
+            border-bottom: none;
+        }
+        
+        .result-label {
+            color: #666;
+            font-weight: 500;
+        }
+        
+        .result-value {
+            color: #333;
+            font-family: 'Courier New', monospace;
+            font-weight: 600;
+        }
+        
+        .error {
+            background: #fee;
+            border: 2px solid #fcc;
+            color: #c33;
+            padding: 12px;
+            border-radius: 6px;
+            margin-top: 15px;
+            display: none;
+        }
+        
+        .error.show {
+            display: block;
+        }
+        
+        .binary {
+            font-size: 12px;
+            color: #888;
+            word-break: break-all;
+        }
+
+        .info-note {
+            background: #e3f2fd;
+            border-left: 4px solid #2196F3;
+            padding: 10px;
+            margin-top: 10px;
+            font-size: 13px;
+            color: #1565C0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌐 CIDR Calculator</h1>
+        <p class="subtitle">Calculate network information from CIDR notation</p>
+        
+        <div class="input-group">
+            <label for="cidr">Enter CIDR (e.g., 192.168.1.0/24):</label>
+            <input type="text" id="cidr" placeholder="192.168.1.0/24" value="192.168.1.0/24">
+        </div>
+        
+        <button class="btn" onclick="calculate()">Calculate</button>
+        
+        <div class="error" id="error"></div>
+        
+        <div class="results" id="results">
+            <div class="result-section">
+                <h2>Network Information</h2>
+                <div class="result-item">
+                    <span class="result-label">Network Address:</span>
+                    <span class="result-value" id="networkAddress"></span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">Broadcast Address:</span>
+                    <span class="result-value" id="broadcastAddress"></span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">Subnet Mask:</span>
+                    <span class="result-value" id="subnetMask"></span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">Wildcard Mask:</span>
+                    <span class="result-value" id="wildcardMask"></span>
+                </div>
+            </div>
+            
+            <div class="result-section">
+                <h2>Host Information</h2>
+                <div class="result-item">
+                    <span class="result-label">First Usable IP:</span>
+                    <span class="result-value" id="firstHost"></span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">Last Usable IP:</span>
+                    <span class="result-value" id="lastHost"></span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">Total Addresses:</span>
+                    <span class="result-value" id="totalHosts"></span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">Usable Hosts:</span>
+                    <span class="result-value" id="usableHosts"></span>
+                </div>
+                <div class="info-note" id="usageNote"></div>
+            </div>
+            
+            <div class="result-section">
+                <h2>Binary Representation</h2>
+                <div class="result-item">
+                    <span class="result-label">IP Address:</span>
+                    <span class="result-value binary" id="ipBinary"></span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">Subnet Mask:</span>
+                    <span class="result-value binary" id="maskBinary"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function calculate() {
+            const cidrInput = document.getElementById('cidr').value.trim();
+            const errorDiv = document.getElementById('error');
+            const resultsDiv = document.getElementById('results');
+            
+            // Hide previous results/errors
+            errorDiv.classList.remove('show');
+            resultsDiv.classList.remove('show');
+            
+            try {
+                // Parse CIDR notation
+                const [ipStr, prefixStr] = cidrInput.split('/');
+                
+                if (!ipStr || !prefixStr) {
+                    throw new Error('Invalid CIDR format. Use format: 192.168.1.0/24');
+                }
+                
+                const prefix = parseInt(prefixStr);
+                
+                if (isNaN(prefix) || prefix < 0 || prefix > 32) {
+                    throw new Error('Prefix must be between 0 and 32');
+                }
+                
+                // Convert IP to 32-bit integer
+                const ipParts = ipStr.split('.');
+                
+                if (ipParts.length !== 4) {
+                    throw new Error('Invalid IP address format');
+                }
+                
+                let ip = 0;
+                for (let i = 0; i < 4; i++) {
+                    const octet = parseInt(ipParts[i]);
+                    if (isNaN(octet) || octet < 0 || octet > 255) {
+                        throw new Error('IP octets must be between 0 and 255');
+                    }
+                    ip = (ip << 8) | octet;
+                }
+                
+                // Calculate subnet mask
+                const mask = prefix === 0 ? 0 : (0xFFFFFFFF << (32 - prefix)) >>> 0;
+                
+                // Calculate network address
+                const network = (ip & mask) >>> 0;
+                
+                // Calculate broadcast address
+                const wildcard = (~mask) >>> 0;
+                const broadcast = (network | wildcard) >>> 0;
+                
+                // Calculate hosts - RFC compliant
+                const totalAddresses = Math.pow(2, 32 - prefix);
+                let firstHost, lastHost, usableHosts, usageNote;
+                
+                if (prefix === 32) {
+                    // Single host - /32
+                    firstHost = network;
+                    lastHost = network;
+                    usableHosts = 1;
+                    usageNote = "ℹ️ /32 is a single host address (host route)";
+                } else if (prefix === 31) {
+                    // Point-to-point link - RFC 3561
+                    firstHost = network;
+                    lastHost = broadcast;
+                    usableHosts = 2;
+                    usageNote = "ℹ️ /31 networks are used for point-to-point links (RFC 3021) - no network/broadcast addresses";
+                } else {
+                    // Standard network - exclude network and broadcast
+                    firstHost = network + 1;
+                    lastHost = broadcast - 1;
+                    usableHosts = totalAddresses - 2;
+                    if (prefix >= 30) {
+                        usageNote = "ℹ️ Traditional subnet - first address is network, last is broadcast";
+                    } else {
+                        usageNote = "ℹ️ Standard subnet - network address: " + intToIp(network) + ", broadcast: " + intToIp(broadcast);
+                    }
+                }
+                
+                // Convert integer to IP string
+                function intToIp(int) {
+                    return [
+                        (int >>> 24) & 0xFF,
+                        (int >>> 16) & 0xFF,
+                        (int >>> 8) & 0xFF,
+                        int & 0xFF
+                    ].join('.');
+                }
+                
+                // Convert integer to binary string with dots
+                function intToBinary(int) {
+                    const binary = (int >>> 0).toString(2).padStart(32, '0');
+                    return binary.match(/.{8}/g).join('.');
+                }
+                
+                // Display results
+                document.getElementById('networkAddress').textContent = intToIp(network);
+                document.getElementById('broadcastAddress').textContent = intToIp(broadcast);
+                document.getElementById('subnetMask').textContent = intToIp(mask);
+                document.getElementById('wildcardMask').textContent = intToIp(wildcard);
+                document.getElementById('firstHost').textContent = intToIp(firstHost);
+                document.getElementById('lastHost').textContent = intToIp(lastHost);
+                document.getElementById('totalHosts').textContent = totalAddresses.toLocaleString();
+                document.getElementById('usableHosts').textContent = usableHosts.toLocaleString();
+                document.getElementById('ipBinary').textContent = intToBinary(ip);
+                document.getElementById('maskBinary').textContent = intToBinary(mask);
+                document.getElementById('usageNote').textContent = usageNote;
+                
+                resultsDiv.classList.add('show');
+                
+            } catch (error) {
+                errorDiv.textContent = '❌ ' + error.message;
+                errorDiv.classList.add('show');
+            }
+        }
+        
+        // Calculate on Enter key
+        document.getElementById('cidr').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                calculate();
+            }
+        });
+        
+        // Calculate on page load with default value
+        window.addEventListener('load', calculate);
+    </script>
+</body>
+</html>
+
+							<script>
+                            	
+							</script>
+                        </body>
+                        </html>
+                    
